@@ -1,0 +1,60 @@
+name: Profile CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate portfolio contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          required = [
+              Path("README.md"),
+              Path("CASE_STUDY.md"),
+              Path("PROJECT_BLUEPRINTS.md"),
+              Path(".github/ISSUE_TEMPLATE/work-request.yml"),
+              Path(".github/workflows/metrics.yml"),
+          ]
+          missing = [str(path) for path in required if not path.is_file()]
+          if missing:
+              raise SystemExit(f"Missing required portfolio files: {missing}")
+
+          readme = Path("README.md").read_text(encoding="utf-8")
+          required_sections = [
+              "Nithin Kumar",
+              "Bounty Autopilot",
+              "Engineering Standards",
+              "Public Engineering Signals",
+              "PROJECT_BLUEPRINTS.md",
+          ]
+          absent = [section for section in required_sections if section not in readme]
+          if absent:
+              raise SystemExit(f"README is missing required sections: {absent}")
+
+          forbidden = re.compile(r"\b(TODO|TBD|lorem ipsum)\b", re.IGNORECASE)
+          if forbidden.search(readme):
+              raise SystemExit("README contains unfinished copy")
+
+          for target in re.findall(r"\[[^]]+\]\((\./[^)#]+)", readme):
+              path = Path(target.removeprefix("./"))
+              if not path.exists():
+                  raise SystemExit(f"Broken local README link: {target}")
+
+          print("Portfolio contract validated")
+          PY
