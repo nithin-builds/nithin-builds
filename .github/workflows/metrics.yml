@@ -19,9 +19,10 @@ concurrency:
 jobs:
   metrics:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Generate public engineering telemetry
-        uses: lowlighter/metrics@latest
+      - name: Generate repository-owned public telemetry
+        uses: lowlighter/metrics@65836723097537a54cd8eb90f61839426b4266b6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           user: nithin-builds
@@ -29,10 +30,15 @@ jobs:
           template: classic
           base: header, activity, community, repositories, metadata
           config_timezone: Asia/Calcutta
+          plugins_errors_fatal: yes
           plugin_lines: yes
           plugin_lines_history_limit: 1
           plugin_lines_repositories_limit: 4
-          plugin_activity: yes
-          plugin_activity_limit: 5
-          plugin_activity_days: 14
-          plugin_activity_filter: all
+
+      - name: Reject embedded telemetry errors
+        shell: bash
+        run: |
+          if grep -Eqi 'unexpected error|bad credentials|insufficient token scopes|rate limit' github-metrics.svg; then
+            echo 'Generated telemetry contains an embedded error' >&2
+            exit 1
+          fi
