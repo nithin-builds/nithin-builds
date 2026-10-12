@@ -1,0 +1,54 @@
+name: Scoped work request
+description: Propose a public, clearly defined engineering task
+title: "[Work request] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out. Please provide public, verifiable details. Do not include passwords, tokens, customer data, or other secrets.
+  - type: input
+    id: repository
+    attributes:
+      label: Repository and issue
+      description: Link the public repository and exact issue.
+      placeholder: https://github.com/owner/repository/issues/123
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and acceptance criteria
+      description: What should change, and how will completion be evaluated?
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline
+      placeholder: YYYY-MM-DD and timezone, or flexible
+    validations:
+      required: true
+  - type: input
+    id: budget
+    attributes:
+      label: Budget or bounty terms
+      description: Include amount, currency, selection rules, and payment conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Reproduction details and context
+      description: Add logs, screenshots, expected behavior, and relevant documentation. Remove secrets.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: The issue is open and the work has not already been completed.
+          required: true
+        - label: I understand that this request is not an automatic acceptance or delivery commitment.
+          required: true
