@@ -4,6 +4,31 @@
 
 Bounty Autopilot is an owner-private workflow for discovering and reviewing public software bounty listings. Its purpose is to reduce false opportunities and missed quality listings while preserving human approval before any external action.
 
+## System architecture
+
+```mermaid
+flowchart TD
+    S[Approved public sources] --> D[Discovery and normalization]
+    D --> Q[Evidence and quality gates]
+    Q -->|rejected| A[Archived audit record]
+    Q -->|qualified| R[Quota-limited AI review]
+    R --> H[Human approval boundary]
+    H -->|notify only| T[Private Telegram recipient]
+    H -->|explicit Proceed| W[Isolated solution worker]
+    W --> V[Tests and evidence package]
+    V --> X[Human delivery decision]
+```
+
+### Trust boundaries
+
+| Boundary | Enforcement |
+|---|---|
+| Source ingestion | Only approved public sources; schema validation fails closed. |
+| Worker identity | Heartbeats require the exact repository, collector identity, authentication, and 5/5 safety tests. |
+| AI usage | Zero-price, quota-limited review runs only when cloud runtime configuration is live. |
+| Notifications | Telegram sends only to the saved private recipient and suppresses duplicates. |
+| External action | No claim, comment, build, pull request, submission, or maintainer contact without explicit human approval. |
+
 ## Problem
 
 A keyword match is not enough to identify a valid bounty. An issue can remain open even when:
@@ -65,6 +90,7 @@ An open GitHub issue titled as a bounty payment-status request referenced **7 al
 - Discovery does not prove that a sponsor will select or pay a submission.
 - Test results apply to the worker's safety checks, not to future bounty acceptance.
 - New sources are not marked connected until their live schema and authorization path are verified.
+- Superteam agent discovery is not connected until its separate API identity and secret-handling path are explicitly authorized.
 
 ## Engineering principles demonstrated
 
