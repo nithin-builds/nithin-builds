@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="110" viewBox="0 0 1200 110" role="img" aria-labelledby="title">
+  <title id="title">Build with evidence</title>
+  <defs>
+    <linearGradient id="footer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="110" rx="18" fill="url(#footer)"/>
+  <text x="600" y="65" text-anchor="middle" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="600">Build with evidence. Ship with control.</text>
+</svg>
